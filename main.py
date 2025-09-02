@@ -6,8 +6,10 @@ classmates = ["Alice", "Bob", "Charlie"]  # список імен однокла
 grades = {"Alice": 90, "Bob": 85, "Charlie": 92}  # словник: ім'я -> оцінка (key-value)
 prices = (9.99, 19.99, 29.99)  # кортеж цін (tuple, незмінний)
 number = {1, 2, 3, 4, 5}  # множина чисел (set, унікальні елементи)
+friends = ["David", "Eva", "Frank"]  # список імен друзів (mutable list)
+i_heve_mom = False  # булеве значення: чи є у людини мама (True/False)
 
-a = [age, price, name, is_student, classmates, grades, prices, number]  # список, що містить різні змінні
+a = [age, price, name, is_student, classmates, grades, prices, number, friends, i_heve_mom]  # список усіх змінних
 b = 0  # лічильник для нумерації елементів при виведенні
 
 for item in a:  # перебір кожного елемента в списку a
