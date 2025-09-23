@@ -1,110 +1,97 @@
 def format_price(price: float) -> str:
-    # Приймає ціну товару як число (float)
-    # Повертає рядок з ціною, форматованою до двох знаків після коми
-    return f"ціна: {price:.2f} грн"
-
+    # Форматує число як ціну з двома знаками після коми
+    return f"Вартість замовлення: {price:.2f} грн"
 
 def item_prices(store: dict) -> dict:
-    # Додає товари та їх ціни у словник store
+    # Додає товари і ціни до словника store
     while True:  # нескінченний цикл для введення товарів
-        name = input("Введіть назву товару (або '-' для завершення): ").strip().lower()
-        # .strip() видаляє пробіли на початку та кінці рядка
-        # .lower() робить всі літери маленькими для уніфікації
-        if name == "-":  # якщо користувач вводить '-', цикл завершується
+        name = input("Введіть назву продукту для магазину (або '-' для завершення): ").strip().lower()
+        # .strip() видаляє пробіли, .lower() уніфікує регістр
+        if name == "-":  # вихід із циклу
             break
-        if name in store:  # перевіряємо, чи товар уже існує у словнику
-            print("Товар вже існує. Введіть іншу назву.")
-            continue  # повертаємось на початок циклу
-        price = float(input("Введіть ціну товару: "))
-        # перетворюємо введене значення у число з плаваючою точкою
-        store[name] = price  # додаємо товар у словник
-    return store  # повертаємо оновлений словник товарів
-
+        if name in store:  # перевірка на дублікати
+            print("Цей продукт вже існує у списку. Введіть інший продукт.")
+            continue
+        price = float(input(f"Вкажіть ціну продукту '{name}': "))
+        store[name] = price  # додаємо продукт у словник
+    return store  # повертаємо словник товарів
 
 def item_availability(store: dict) -> dict:
     # Створює словник наявності товарів
     availability = {}
-    for item in store:  # проходимо по всіх товарах у store
-        while True:  # цикл до тих пір, поки користувач не введе 'так' або 'ні'
-            ans = input(f"Чи є {item} в наявності? (так/ні): ").strip().lower()
-            if ans == "так":
-                availability[item] = True  # товар є в наявності
-                break  # вихід із внутрішнього циклу
-            elif ans == "ні":
-                availability[item] = False  # товар відсутній
+    for item in store:  # проходимо по кожному товару
+        while True:
+            availability_input = input(f"Чи доступний '{item}' на складі? (так/ні): ").strip().lower()
+            if availability_input == "так":
+                availability[item] = True
+                break
+            elif availability_input == "ні":
+                availability[item] = False
                 break
             else:
-                print("Будь ласка, введіть 'так' або 'ні'.")
-    return availability  # повертаємо словник наявності
+                print("Введіть 'так' або 'ні'.")
+    return availability
 
-
-def check_availability(order: list, availability: dict) -> bool:
-    # Перевіряє, чи всі товари із замовлення є в наявності
-    all_available = True  # спочатку вважаємо, що все є
-    for item in order:  # проходимо по кожному товару замовлення
+def check_availability(products_to_check: list, availability: dict) -> bool:
+    # Перевіряє, чи всі товари є в наявності
+    all_available = True
+    for item in products_to_check:
         if item not in availability or not availability[item]:
-            # якщо товару немає у словнику або він відсутній
-            print(f"{item} - немає в наявності")
-            all_available = False  # встановлюємо прапорець у False
-    return all_available  # повертаємо True, якщо всі товари доступні
-
+            print(f"На жаль, '{item}' зараз немає в наявності")
+            all_available = False
+    return all_available
 
 def total_price(order: list, store: dict) -> str:
-    # Обчислює загальну ціну замовлення
-    return format_price(sum(store[i] for i in order))
-    # сумуємо ціни всіх товарів із списку order
-    # форматування відбувається через функцію format_price
-
+    # Обчислює загальну суму замовлення
+    total = 0
+    for i in order:
+        total += store[i]
+    return format_price(total)
 
 def calculate_order_price(availability: dict, store: dict):
-    # Обробляє замовлення користувача
-    order = [item.strip() for item in input("Введіть товари через кому: ").lower().split(",")]
-    # вводимо товари через кому, перетворюємо у список
-    # .strip() видаляє пробіли, .lower() робить усі літери маленькими
-    if check_availability(order, availability):  # перевіряємо наявність
-        ans = input("Купити чи переглянути ціну? (1/2): ").strip()
-        # питаємо користувача, чи він хоче купити або просто подивитись суму
+    # Приймає замовлення, перевіряє наявність та показує суму
+    order = input("Введіть список товарів через кому: ").lower().split(",")
+    order = [item.strip() for item in order]
+    if check_availability(order, availability):
+        ans = input("Бажаєте оформити покупку чи переглянути загальну вартість? (1 – купити / 2 – переглянути): ").strip()
         if ans == "1":
-            print(f"До сплати {total_price(order, store)}")  # виводимо суму до сплати
+            print(f"Сума до оплати: {total_price(order, store)}")
         elif ans == "2":
-            print(f"Загальна {total_price(order, store)}")  # виводимо загальну суму
+            print(f"Загальна вартість замовлення: {total_price(order, store)}")
         else:
-            print("Некоректний ввід.")  # якщо введено щось інше
-
+            print("Некоректний ввід.")
 
 def main():
     # Основна функція програми
-    # Викликає функцію для обробки замовлення
     calculate_order_price(availability, store)
 
-
-# Словник з товарами та їх цінами
-store = {
-    "хліб": 25.00,
-    "молоко": 40.00,
-    "масло": 75.50,
-    "сир": 120.00,
-    "яйця": 65.00,
-    "кава": 150.00,
-    "чай": 90.00,
-    "цукор": 30.00,
-    "сіль": 15.00,
-    "макарони": 50.00
-}
-
-# Словник наявності товарів (True = є в наявності, False = немає)
-availability = {
-    "хліб": True,
-    "молоко": True,
-    "масло": False,
-    "сир": True,
-    "яйця": False,
-    "кава": True,
-    "чай": True,
-    "цукор": True,
-    "сіль": True,
-    "макарони": False
-}
-
 if __name__ == "__main__":
-    main()  # запускаємо основну програму
+    # Новий список товарів та їх ціни
+    store = {
+        "апельсини": 45.50,
+        "банани": 38.00,
+        "виноград": 120.00,
+        "йогурт": 55.00,
+        "хлібці": 28.00,
+        "мед": 150.00,
+        "зелений чай": 90.00,
+        "кавові зерна": 200.00,
+        "печиво": 35.00,
+        "соки": 60.00
+    }
+
+    # Наявність товарів
+    availability = {
+        "апельсини": True,
+        "банани": True,
+        "виноград": False,
+        "йогурт": True,
+        "хлібці": True,
+        "мед": False,
+        "зелений чай": True,
+        "кавові зерна": True,
+        "печиво": True,
+        "соки": False
+    }
+
+    main()
