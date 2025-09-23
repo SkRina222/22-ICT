@@ -1,55 +1,51 @@
+# Створюємо порожній словник для збереження балів студентів
 grades = {}
 
+# Введення даних про студентів
 while True:
-    name = input("Введіть ім'я студента (або 'stop' для завершення): ").strip()
-    if name.lower() == 'stop':
+    student_name = input("Введіть ім'я учня (або 'stop' для завершення введення): ").strip()
+    # Перевірка на завершення введення
+    if student_name.lower() == 'stop':
         break
     try:
-        grade = int(input(f"Введіть оцінку для {name} (1-12): ").strip())
-        if grade < 1 or grade > 12:
-            print("Оцінка має бути від 1 до 12. Спробуйте ще раз.")
+        # Введення оцінки студента
+        score = int(input(f"Вкажіть бал для {student_name} (1-12): ").strip())
+        if score < 1 or score > 12:
+            print("Помилка: бал повинен бути від 1 до 12. Спробуйте ще раз.")
             continue
-        grades[name] = grade
+        grades[student_name] = score  # Додаємо студента і його бал у словник
     except ValueError:
-        print("Будь ласка, введіть ціле число для оцінки.")
+        print("Будь ласка, введіть ціле число від 1 до 12.")
         continue
 
-print("\nСписок студентів та їх оцінки:")
+# Вивід списку студентів та їх балів
+print("\nСписок учнів і їхні бали:")
 for student, score in grades.items():
     print(f"{student}: {score}")
 
+# Обчислення середнього балу класу
 if grades:
-    average = sum(grades.values()) / len(grades)
-    print(f"\nСередній бал по групі: {average:.2f}")
+    average_score = sum(grades.values()) / len(grades)
+    print(f"\nСередній бал класу: {average_score:.2f}")
 
-excellent_students = []  # відмінники 10-12
-good_students = []       # хорошисти 7-9
-average_students = []    # відстаючі 4-6
-failed_students = []     # не здали 1-3
+# Розподіл студентів за категоріями
+top_students = []       # відмінники 10-12
+good_students = []      # хорошисти 7-9
+average_students = []   # середні 4-6
+failing_students = []   # не склали 1-3
 
 for student, score in grades.items():
     if 10 <= score <= 12:
-        excellent_students.append(student)
+        top_students.append(student)
     elif 7 <= score <= 9:
         good_students.append(student)
     elif 4 <= score <= 6:
         average_students.append(student)
     elif 1 <= score <= 3:
-        failed_students.append(student)
+        failing_students.append(student)
 
-
-print(f"\nВідмінники ({len(excellent_students)}):")
-for student in excellent_students:
-    print(f"- {student}")
-
-print(f"\nХорошисти ({len(good_students)}):")
-for student in good_students:
-    print(f"- {student}")
-
-print(f"\nВідстаючі ({len(average_students)}):")
-for student in average_students:
-    print(f"- {student}")
-
-print(f"\nНе здали ({len(failed_students)}):")
-for student in failed_students:
-    print(f"- {student}")
+# Вивід категорій студентів
+print(f"\nВідмінники ({len(top_students)}): {', '.join(top_students) if top_students else 'немає'}")
+print(f"Хорошисти ({len(good_students)}): {', '.join(good_students) if good_students else 'немає'}")
+print(f"Середні ({len(average_students)}): {', '.join(average_students) if average_students else 'немає'}")
+print(f"Не склали ({len(failing_students)}): {', '.join(failing_students) if failing_students else 'немає'}")
