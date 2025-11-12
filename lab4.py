@@ -77,8 +77,6 @@ def calculate_order_price(availability: dict, store: dict):
             else:
                 print("Некоректний ввід.")
             break
-        else:
-            print("Будь ласка, оберіть товари, які є в наявності.")
         
 def main():
     # Основна функція програми
