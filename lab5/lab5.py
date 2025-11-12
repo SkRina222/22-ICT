@@ -6,7 +6,7 @@ import requests
 import datetime
 import collections
 import logging
-import hashlib
+import hashlib # MD5 бкзпера данних та перевірка їх цілісності
 import csv
 
 # 1. Використання json
